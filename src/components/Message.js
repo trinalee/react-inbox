@@ -4,10 +4,6 @@ import 'bootstrap/dist/css/bootstrap-theme.css';
 import 'font-awesome/css/font-awesome.css';
 
 class Message extends Component {
-    state = {
-        selected: false
-    }
-
     onToggleStar = () => {
         this.props.toggleStar(this.props.index)
     }
@@ -17,11 +13,10 @@ class Message extends Component {
     }
 
     render () {
-        let {subject, read, starred, labels} = this.props.message
+        let {subject, read, starred, labels, selected} = this.props.message
 
-        console.log("message render at index:", this.props.index)
         return (
-            <div className= {`row message ${read ? 'read' : 'unread'} ${this.state.selected ? 'selected' : ''}`}>
+            <div className= {`row message ${read ? 'read' : 'unread'} ${selected ? 'selected' : ''}`}>
                 <div className="col-xs-1">
                     <div className="row">
                         <div className="col-xs-2">

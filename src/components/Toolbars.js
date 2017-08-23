@@ -2,6 +2,14 @@ import React, {Component} from 'react'
 
 class Toolbars extends Component {
 
+    onApplyLabelSelect = (e) => {
+        this.props.applyLabel(e.target.value)
+    }
+
+    onRemoveLabelSelect = (e) => {
+        this.props.removeLabel(e.target.value)
+    }
+
     render() {
         return (
             <div className="row toolbar">
@@ -15,22 +23,22 @@ class Toolbars extends Component {
                         <i className="fa fa-check-square-o"></i>
                     </button>
 
-                    <button className="btn btn-default" onClick={this.props.markRead}>
+                    <button className="btn btn-default" onClick={this.props.markAsRead}>
                         Mark As Read
                     </button>
 
-                    <button className="btn btn-default" onClick={this.props.markUnread}>
+                    <button className="btn btn-default" onClick={this.props.markAsUnread}>
                         Mark As Unread
                     </button>
 
-                    <select className="form-control label-select">
+                    <select className="form-control label-select" onChange={this.onApplyLabelSelect}>
                         <option>Apply label</option>
                         <option value="dev">dev</option>
                         <option value="personal">personal</option>
                         <option value="gschool">gschool</option>
                     </select>
 
-                    <select className="form-control label-select">
+                    <select className="form-control label-select" onChange={this.onRemoveLabelSelect}>
                         <option>Remove label</option>
                         <option value="dev">dev</option>
                         <option value="personal">personal</option>

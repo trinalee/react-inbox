@@ -42,7 +42,7 @@ class Messages extends Component {
         }))
     }
 
-    markRead = () => {
+    markAsRead = () => {
         this.setState(prevState => ({
             messages: prevState.messages.map(message => {
                 let msg = message
@@ -53,11 +53,41 @@ class Messages extends Component {
     }
 
 
-    markUnread = () => {
+    markAsUnread = () => {
         this.setState(prevState => ({
             messages: prevState.messages.map(message => {
                 let msg = message
                 msg.read = message.selected ? false : message.read
+                return msg
+            })
+        }))
+    }
+
+    applyLabel = (labelName) => {
+        this.setState(prevState => ({
+            messages: prevState.messages.map(message => {
+                let msg = message
+                if (labelName !== "Apply label"
+                    && message.selected
+                    && !msg.labels.some(label => (label === labelName))) {
+                    msg.labels.push(labelName)
+                }
+                return msg
+            })
+        }))
+    }
+
+    removeLabel = (labelName) => {
+        this.setState(prevState => ({
+            messages: prevState.messages.map(message => {
+                let msg = message
+                let labels
+                if (labelName !== "Remove label"
+                    && message.selected
+                    && message.labels.some(label => (label === labelName))) {
+                    labels = message.labels.filter(label => (label !== labelName))
+                    msg.labels = labels
+                }
                 return msg
             })
         }))
@@ -68,8 +98,10 @@ class Messages extends Component {
         return (
             <div>
                 <Toolbars
-                    markRead={this.markRead}
-                    markUnread={this.markUnread}
+                    markAsRead={this.markAsRead}
+                    markAsUnread={this.markAsUnread}
+                    applyLabel={this.applyLabel}
+                    removeLabel={this.removeLabel}
                 />
                 {this.state.messages.map((message, index) => <Message
                     key={index}
