@@ -29,7 +29,6 @@ class Messages extends Component {
     }
 
     toggleSelected = (index) => {
-        console.log("toggleSelected", index)
         let message = this.state.messages[index]
         message.selected = !this.state.messages[index].selected
 
@@ -93,6 +92,29 @@ class Messages extends Component {
         }))
     }
 
+    toggleAll = () => {
+        if (this.state.messages.every(message => message.selected === true)) {
+            console.log("on toggleAll all selected")
+
+            this.setState(prevState => ({
+                messages: prevState.messages.map(message => {
+                    let msg = message
+                    msg.selected = false
+                    return msg
+                })
+            }))
+        } else {
+            console.log("on toggleAll not all selected")
+            this.setState(prevState => ({
+                messages: prevState.messages.map(message => {
+                    let msg = message
+                    msg.selected = true
+                    return msg
+                })
+            }))
+        }
+    }
+
     render() {
         console.log("messages", this.state.messages)
         return (
@@ -102,6 +124,7 @@ class Messages extends Component {
                     markAsUnread={this.markAsUnread}
                     applyLabel={this.applyLabel}
                     removeLabel={this.removeLabel}
+                    toggleAll={this.toggleAll}
                 />
                 {this.state.messages.map((message, index) => <Message
                     key={index}

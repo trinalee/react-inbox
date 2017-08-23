@@ -10,6 +10,7 @@ class Toolbars extends Component {
         this.props.removeLabel(e.target.value)
     }
 
+
     render() {
         return (
             <div className="row toolbar">
@@ -19,8 +20,8 @@ class Toolbars extends Component {
                         unread messages
                     </p>
 
-                    <button className="btn btn-default">
-                        <i className="fa fa-check-square-o"></i>
+                    <button className="btn btn-default" onClick={this.props.toggleAll}>
+                        <i className="fa fa-check-square-o"/>
                     </button>
 
                     <button className="btn btn-default" onClick={this.props.markAsRead}>
