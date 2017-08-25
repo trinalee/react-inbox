@@ -73,7 +73,7 @@ class Messages extends Component {
                 let msg = message
                 if (labelName !== "Apply label"
                     && message.selected
-                    && !msg.labels.some(label => (label === labelName))) {
+                    && !message.labels.some(label => (label === labelName))) {
                     msg.labels.push(labelName)
                 }
                 return msg
@@ -118,10 +118,25 @@ class Messages extends Component {
     }
 
     render() {
-        console.log("messages", this.state.messages)
+        let unreadCount = this.state.messages ?
+            this.state.messages.reduce((count, message) => {
+            if (message.read === false) {
+                return count + 1
+            } else {
+                return count
+            }
+        }, 0) : 0
+
+        let selectedMessage = this.state.messages ?
+                this.state.messages.every(message => message.selected === true) ? "all" :
+                this.state.messages.every(message => message.selected === false || message.selected === undefined) ? "none" : "some"
+            : "none"
+
         return (
             <div>
                 <Toolbars
+                    selectedMessage={selectedMessage}
+                    unreadCount={unreadCount}
                     markAsRead={this.markAsRead}
                     markAsUnread={this.markAsUnread}
                     applyLabel={this.applyLabel}
