@@ -21,9 +21,9 @@ class Messages extends Component {
 
         this.setState(prevState => ({
             messages: [
-            ...prevState.messages.slice(0, index),
-            message,
-            ...prevState.messages.slice(index + 1)
+                ...prevState.messages.slice(0, index),
+                message,
+                ...prevState.messages.slice(index + 1)
             ]
         }))
     }
@@ -41,6 +41,12 @@ class Messages extends Component {
         }))
     }
 
+    deleteSelected = () => {
+        this.setState(prevState => ({
+                messages: prevState.messages.filter(message => message.selected ? false : true)
+            }))
+    }
+
     markAsRead = () => {
         this.setState(prevState => ({
             messages: prevState.messages.map(message => {
@@ -50,7 +56,6 @@ class Messages extends Component {
             })
         }))
     }
-
 
     markAsUnread = () => {
         this.setState(prevState => ({
@@ -94,8 +99,6 @@ class Messages extends Component {
 
     toggleAll = () => {
         if (this.state.messages.every(message => message.selected === true)) {
-            console.log("on toggleAll all selected")
-
             this.setState(prevState => ({
                 messages: prevState.messages.map(message => {
                     let msg = message
@@ -104,7 +107,6 @@ class Messages extends Component {
                 })
             }))
         } else {
-            console.log("on toggleAll not all selected")
             this.setState(prevState => ({
                 messages: prevState.messages.map(message => {
                     let msg = message
@@ -125,6 +127,7 @@ class Messages extends Component {
                     applyLabel={this.applyLabel}
                     removeLabel={this.removeLabel}
                     toggleAll={this.toggleAll}
+                    deleteSelected={this.deleteSelected}
                 />
                 {this.state.messages.map((message, index) => <Message
                     key={index}

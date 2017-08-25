@@ -20,7 +20,7 @@ class Message extends Component {
                 <div className="col-xs-1">
                     <div className="row">
                         <div className="col-xs-2">
-                            <input type="checkbox" onClick={this.onToggleSelected}/>
+                            <input type="checkbox" checked={selected} onClick={this.onToggleSelected}/>
                         </div>
                         <div className="col-xs-2">
                             <i className={`star fa ${starred ? 'fa-star' : 'fa-star-o'}`} onClick={this.onToggleStar}/>
