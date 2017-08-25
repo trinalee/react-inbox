@@ -129,7 +129,8 @@ class Messages extends Component {
 
         let selectedMessage = this.state.messages ?
                 this.state.messages.every(message => message.selected === true) ? "all" :
-                this.state.messages.every(message => message.selected === false || message.selected === undefined) ? "none" : "some"
+                this.state.messages.every(message => message.selected === false
+                || message.selected === undefined) ? "none" : "some"
             : "none"
 
         return (

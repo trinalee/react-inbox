@@ -20,15 +20,19 @@ class Message extends Component {
                 <div className="col-xs-1">
                     <div className="row">
                         <div className="col-xs-2">
-                            <input type="checkbox" checked={selected} onClick={this.onToggleSelected}/>
+                            <input type="checkbox"
+                                   checked={selected}
+                                   onClick={this.onToggleSelected}/>
                         </div>
                         <div className="col-xs-2">
-                            <i className={`star fa ${starred ? 'fa-star' : 'fa-star-o'}`} onClick={this.onToggleStar}/>
+                            <i className={`star fa ${starred ? 'fa-star' : 'fa-star-o'}`}
+                               onClick={this.onToggleStar}/>
                         </div>
                     </div>
                 </div>
                 <div className="col-xs-11">
-                    {labels.map((label, index) => (<span key={index} className="label label-warning">{label}</span>))}
+                    {labels.map((label, index) =>
+                        (<span key={index} className="label label-warning">{label}</span>))}
                     <a href="#">
                         {subject}
                     </a>
