@@ -1,7 +1,4 @@
 import React, {Component} from 'react'
-import 'bootstrap/dist/css/bootstrap.css';
-import 'bootstrap/dist/css/bootstrap-theme.css';
-import 'font-awesome/css/font-awesome.css';
 
 class Message extends Component {
     onToggleStar = () => {

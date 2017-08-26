@@ -1,19 +1,20 @@
 import React, {Component} from 'react'
 import Message from './Message'
 import Toolbars from './Toolbars'
+import messagesData from '../resources/messagesData'
 
 class Messages extends Component {
     state = {
-        messages: [],
+        messages: messagesData,
     }
 
-    async componentDidMount() {
-        const response = await fetch('http://localhost:3001/api/messages')
-        const data = await response.json()
-        this.setState({
-            messages: data._embedded.messages
-        })
-    }
+    // async componentDidMount() {
+    //     const response = await fetch('http://localhost:3001/api/messages')
+    //     const data = await response.json()
+    //     this.setState({
+    //         messages: data._embedded.messages
+    //     })
+    // }
 
     toggleStar = (index) => {
         let message = this.state.messages[index]
