@@ -1,42 +1,32 @@
-import React, {Component} from 'react'
+import React from 'react'
 
-class Message extends Component {
-    onToggleStar = () => {
-        this.props.toggleStar(this.props.index)
-    }
+const Message = ({index, message, toggleSelected, toggleStar}) => {
+    let {subject, read, starred, labels, selected} = message
 
-    onToggleSelected = () => {
-        this.props.toggleSelected(this.props.index)
-    }
-
-    render () {
-        let {subject, read, starred, labels, selected} = this.props.message
-
-        return (
-            <div className= {`row message ${read ? 'read' : 'unread'} ${selected ? 'selected' : ''}`}>
-                <div className="col-xs-1">
-                    <div className="row">
-                        <div className="col-xs-2">
-                            <input type="checkbox"
-                                   checked={selected}
-                                   onClick={this.onToggleSelected}/>
-                        </div>
-                        <div className="col-xs-2">
-                            <i className={`star fa ${starred ? 'fa-star' : 'fa-star-o'}`}
-                               onClick={this.onToggleStar}/>
-                        </div>
+    return (
+        <div className={`row message ${read ? 'read' : 'unread'} ${selected ? 'selected' : ''}`}>
+            <div className="col-xs-1">
+                <div className="row">
+                    <div className="col-xs-2">
+                        <input type="checkbox"
+                               checked={selected ? true : false}
+                               onClick={() => toggleSelected(index)}/>
+                    </div>
+                    <div className="col-xs-2">
+                        <i className={`star fa ${starred ? 'fa-star' : 'fa-star-o'}`}
+                           onClick={() => toggleStar(index)}/>
                     </div>
                 </div>
-                <div className="col-xs-11">
-                    {labels.map((label, index) =>
-                        (<span key={index} className="label label-warning">{label}</span>))}
-                    <a href="#">
-                        {subject}
-                    </a>
-                </div>
             </div>
-        )
-    }
+            <div className="col-xs-11">
+                {labels.map((label, index) =>
+                    (<span key={index} className="label label-warning">{label}</span>))}
+                <a href="#">
+                    {subject}
+                </a>
+            </div>
+        </div>
+    )
 }
 
 export default Message

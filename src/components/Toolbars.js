@@ -1,28 +1,13 @@
-import React, {Component} from 'react'
+import React from 'react'
 
-class Toolbars extends Component {
-    state = {
-
-    }
-
-    onApplyLabelSelect = (e) => {
-        console.log("e is: ", e.target)
-        this.props.applyLabel(e.target.value)
-    }
-
-    onRemoveLabelSelect = (e) => {
-        this.props.removeLabel(e.target.value)
-    }
-
-
-    render() {
-        let {selectedMessage,
-            unreadCount,
-            toggleAll,
-            markAsRead,
-            markAsUnread,
-            deleteSelected} = this.props
-
+const Toolbars = ({selectedMessage,
+                        unreadCount,
+                        toggleAll,
+                        markAsRead,
+                        markAsUnread,
+                        deleteSelected,
+                        applyLabel,
+                        removeLabel}) =>  {
         return (
             <div className="row toolbar">
                 <div className="col-md-12">
@@ -50,7 +35,7 @@ class Toolbars extends Component {
                     <select id="apply-label-select"
                             className="form-control label-select"
                             disabled={selectedMessage==="none"}
-                            onChange={this.onApplyLabelSelect}
+                            onChange={(e)=>applyLabel(e.target.value)}
                             value="Apply Label">
                         <option selected>Apply label</option>
                         <option value="dev">dev</option>
@@ -60,7 +45,7 @@ class Toolbars extends Component {
 
                     <select className="form-control label-select"
                             disabled={selectedMessage==="none"}
-                            onChange={this.onRemoveLabelSelect}
+                            onChange={(e)=>removeLabel(e.target.value)}
                             value="Remove Label">
                         <option selected>Remove label</option>
                         <option value="dev">dev</option>
@@ -77,6 +62,5 @@ class Toolbars extends Component {
             </div>
         )
     }
-}
 
 export default Toolbars
