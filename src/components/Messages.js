@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import Message from './Message'
 import Toolbars from './Toolbars'
+import ComposeMessage from './ComposeMessage'
 
 class Messages extends Component {
     state = {
@@ -8,18 +9,19 @@ class Messages extends Component {
     }
 
     async componentDidMount() {
-        const response = await fetch('/api/messages')
-        const data = await response.json()
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/messages`);
+        const data = await response.json();
         this.setState({
-            messages: data._embedded.messages
+            messages: data._embedded.messages,
+            composeMode: false
         })
     }
 
     toggleStar = async (index) => {
-        let message = this.state.messages[index]
-        message.starred = !this.state.messages[index].starred
+        let message = this.state.messages[index];
+        message.starred = !this.state.messages[index].starred;
 
-        await fetch('/api/messages', {
+        await fetch(`${process.env.REACT_APP_API_URL}/api/messages`, {
             method: 'PATCH',
             body: JSON.stringify({
                 messageIds: [index + 1],
@@ -42,8 +44,8 @@ class Messages extends Component {
     }
 
     toggleSelected = (index) => {
-        let message = this.state.messages[index]
-        message.selected = !this.state.messages[index].selected
+        let message = this.state.messages[index];
+        message.selected = !this.state.messages[index].selected;
 
         this.setState(prevState => ({
             messages: [
@@ -55,7 +57,7 @@ class Messages extends Component {
     }
 
     deleteSelected = async () => {
-        await fetch('/api/messages', {
+        await fetch(`${process.env.REACT_APP_API_URL}/api/messages`, {
             method: 'PATCH',
             body: JSON.stringify({
                 messageIds: this.state.messages.filter(message => message.selected)
@@ -69,12 +71,12 @@ class Messages extends Component {
         });
 
         this.setState(prevState => ({
-                messages: prevState.messages.filter(message => message.selected ? false : true)
-            }))
+            messages: prevState.messages.filter(message => !message.selected)
+        }))
     }
 
     markAsRead = async () => {
-        await fetch('/api/messages', {
+        await fetch(`${process.env.REACT_APP_API_URL}/api/messages`, {
             method: 'PATCH',
             body: JSON.stringify({
                 messageIds: this.state.messages.filter(message => message.selected)
@@ -91,7 +93,7 @@ class Messages extends Component {
         this.setState(prevState => ({
             messages: prevState.messages.map(message => {
                 let msg = message;
-                msg.read = message.selected ? true : message.read
+                msg.read = message.selected ? true : message.read;
                 msg.selected = false;
                 return msg
             })
@@ -99,7 +101,7 @@ class Messages extends Component {
     }
 
     markAsUnread = async () => {
-        await fetch('/api/messages', {
+        await fetch(`${process.env.REACT_APP_API_URL}/api/messages`, {
             method: 'PATCH',
             body: JSON.stringify({
                 messageIds: this.state.messages.filter(message => message.selected)
@@ -116,7 +118,7 @@ class Messages extends Component {
         this.setState(prevState => ({
             messages: prevState.messages.map(message => {
                 let msg = message;
-                msg.read = message.selected ? false : message.read
+                msg.read = message.selected ? false : message.read;
                 msg.selected = false;
                 return msg
             })
@@ -130,9 +132,9 @@ class Messages extends Component {
                 (message.selected
                 && !message.labels.some(label => (label === labelName))))
                 .map(msg => msg.id))
-            console.log("labelName ", labelName)
+            console.log("labelName ", labelName);
 
-            await fetch('/api/messages', {
+            await fetch(`${process.env.REACT_APP_API_URL}/api/messages`, {
                 method: 'PATCH',
                 body: JSON.stringify({
                     messageIds: this.state.messages.filter(message =>
@@ -140,7 +142,7 @@ class Messages extends Component {
                         && !message.labels.some(label => (label === labelName))))
                         .map(msg => msg.id),
                     command: 'addLabel',
-                    label: 'dev'
+                    label: labelName
                 }),
                 headers: {
                     'Content-Type': 'application/json',
@@ -165,7 +167,7 @@ class Messages extends Component {
 
     removeLabel = async (labelName) => {
         if (labelName !== "Remove label") {
-            await fetch('/api/messages', {
+            await fetch(`${process.env.REACT_APP_API_URL}/api/messages`, {
                 method: 'PATCH',
                 body: JSON.stringify({
                     messageIds: this.state.messages.filter(message => message.selected)
@@ -185,7 +187,7 @@ class Messages extends Component {
                     let labels;
                     if (message.selected
                         && message.labels.some(label => (label === labelName))) {
-                        labels = message.labels.filter(label => (label !== labelName))
+                        labels = message.labels.filter(label => (label !== labelName));
                         msg.labels = labels
                     }
                     msg.selected = false;
@@ -199,34 +201,66 @@ class Messages extends Component {
         if (this.state.messages.every(message => message.selected === true)) {
             this.setState(prevState => ({
                 messages: prevState.messages.map(message => {
-                    let msg = message
-                    msg.selected = false
+                    let msg = message;
+                    msg.selected = false;
                     return msg
                 })
             }))
         } else {
             this.setState(prevState => ({
                 messages: prevState.messages.map(message => {
-                    let msg = message
-                    msg.selected = true
+                    let msg = message;
+                    msg.selected = true;
                     return msg
                 })
             }))
         }
     };
 
+    composeModeToggle = () => {
+        this.setState(prevState => ({
+            composeMode: !prevState.composeMode
+        }))
+    };
+
+    onSendMessage = async (msgSubject, msgBody) => {
+        let response = await fetch(`${process.env.REACT_APP_API_URL}/api/messages`, {
+            method: 'POST',
+            body: JSON.stringify({
+                subject: msgSubject,
+                body: msgBody
+            }),
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+            }
+        });
+
+        const newMessage = await response.json()
+
+        this.setState(prevState => ({
+            messages: [
+                ...prevState.messages,
+                newMessage
+            ],
+            composeMode: false
+        }));
+    }
+
     render() {
+        if (!this.state.messages.length) return (<div>Loading...</div>)
+
         let unreadCount = this.state.messages ?
             this.state.messages.reduce((count, message) => {
-            if (message.read === false) {
-                return count + 1
-            } else {
-                return count
-            }
-        }, 0) : 0
+                if (message.read === false) {
+                    return count + 1
+                } else {
+                    return count
+                }
+            }, 0) : 0
 
         let selectedMessage = this.state.messages ?
-                this.state.messages.every(message => message.selected === true) ? "all" :
+            this.state.messages.every(message => message.selected === true) ? "all" :
                 this.state.messages.every(message => message.selected === false
                 || message.selected === undefined) ? "none" : "some"
             : "none";
@@ -242,7 +276,15 @@ class Messages extends Component {
                     removeLabel={this.removeLabel}
                     toggleAll={this.toggleAll}
                     deleteSelected={this.deleteSelected}
+                    composeModeToggle={this.composeModeToggle}
                 />
+
+                {this.state.composeMode &&
+                <ComposeMessage
+                    onSendMessage={this.onSendMessage}
+
+                />}
+
                 {this.state.messages.map((message, index) => <Message
                     key={index}
                     index={index}

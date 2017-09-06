@@ -7,7 +7,8 @@ const Toolbars = ({selectedMessage,
                         markAsUnread,
                         deleteSelected,
                         applyLabel,
-                        removeLabel}) =>  {
+                        removeLabel,
+                        composeModeToggle}) =>  {
         return (
             <div className="row toolbar">
                 <div className="col-md-12">
@@ -15,6 +16,10 @@ const Toolbars = ({selectedMessage,
                         <span className="badge badge">{unreadCount}
                         </span>{`unread message${unreadCount === 1 ? "" : "s"}`}
                     </p>
+                    <a className="btn btn-danger"
+                        onClick={composeModeToggle}>
+                        <i className="fa fa-plus"></i>
+                    </a>
                     <button className="btn btn-default"
                             onClick={toggleAll}>
                         <i className={`fa ${selectedMessage === "all" ? "fa-check-square-o" :
