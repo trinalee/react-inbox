@@ -2,6 +2,8 @@ import React, {Component} from 'react'
 import Message from './Message'
 import Toolbars from './Toolbars'
 import ComposeMessage from './ComposeMessage'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 
 class Messages extends Component {
     state = {
@@ -9,10 +11,11 @@ class Messages extends Component {
     }
 
     async componentDidMount() {
-        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/messages`);
-        const data = await response.json();
+        let { messages } = this.props;
+        // const response = await fetch(`${process.env.REACT_APP_API_URL}/api/messages`);
+        // const data = await response.json();
         this.setState({
-            messages: data._embedded.messages,
+            messages: messages,
             composeMode: false
         })
     }
@@ -248,10 +251,9 @@ class Messages extends Component {
     }
 
     render() {
-        if (!this.state.messages.length) return (<div>Loading...</div>)
-
-        let unreadCount = this.state.messages ?
-            this.state.messages.reduce((count, message) => {
+        if (!this.props.messages.all.length) return (<div>Loading...</div>)
+        let unreadCount = this.props.messages.all ?
+            this.props.messages.all.reduce((count, message) => {
                 if (message.read === false) {
                     return count + 1
                 } else {
@@ -259,9 +261,9 @@ class Messages extends Component {
                 }
             }, 0) : 0
 
-        let selectedMessage = this.state.messages ?
-            this.state.messages.every(message => message.selected === true) ? "all" :
-                this.state.messages.every(message => message.selected === false
+        let selectedMessage = this.props.messages.all ?
+            this.props.messages.all.every(message => message.selected === true) ? "all" :
+                this.props.messages.all.every(message => message.selected === false
                 || message.selected === undefined) ? "none" : "some"
             : "none";
 
@@ -285,16 +287,24 @@ class Messages extends Component {
 
                 />}
 
-                {this.state.messages.map((message, index) => <Message
+                {this.props.messages.all.map((message, index) => <Message
                     key={index}
                     index={index}
                     message={message}
-                    toggleStar={this.toggleStar}
-                    toggleSelected={this.toggleSelected}
                 />)}
             </div>
         )
     }
 }
 
-export default Messages
+const mapStateToProps = state => ({
+    messages: state.messages,
+})
+
+const mapDispatchToProps = dispatch => bindActionCreators({
+}, dispatch)
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(Messages)

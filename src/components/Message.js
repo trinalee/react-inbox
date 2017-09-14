@@ -1,7 +1,10 @@
 import React from 'react'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import { toggleSelected, toggleStar } from '../actions'
 
-const Message = ({index, message, toggleSelected, toggleStar}) => {
-    let {subject, read, starred, labels, selected} = message
+const Message = ({index, message, toggleSelected,  toggleStar}) => {
+    let {subject, read, starred, labels, selected} = message;
 
     return (
         <div className={`row message ${read ? 'read' : 'unread'} ${selected ? 'selected' : ''}`}>
@@ -14,7 +17,10 @@ const Message = ({index, message, toggleSelected, toggleStar}) => {
                     </div>
                     <div className="col-xs-2">
                         <i className={`star fa ${starred ? 'fa-star' : 'fa-star-o'}`}
-                           onClick={() => toggleStar(index)}/>
+                           onClick={() => {
+                               console.log("*** STAR:", index, message)
+                               toggleStar(index, message)
+                           }}/>
                     </div>
                 </div>
             </div>
@@ -29,4 +35,16 @@ const Message = ({index, message, toggleSelected, toggleStar}) => {
     )
 }
 
-export default Message
+const mapStateToProps = state => ({
+    messages: state.messages,
+})
+
+const mapDispatchToProps = dispatch => bindActionCreators({
+    toggleSelected,
+    toggleStar
+}, dispatch)
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(Message)
