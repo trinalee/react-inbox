@@ -1,10 +1,13 @@
 import React from 'react'
+import {connect} from 'react-redux'
+import {bindActionCreators} from 'redux'
+import {sendMessage} from '../actions'
 
-const ComposeMessage = ({onSendMessage}) => {
+const ComposeMessage = ({sendMessage}) => {
     return (
         <form className="form-horizontal well" onSubmit={(e) => {
             e.preventDefault();
-            onSendMessage(e.target.subject.value, e.target.body.value)
+            sendMessage(e.target.subject.value, e.target.body.value)
         }}>
             <div className="form-group">
                 <div className="col-sm-8 col-sm-offset-2">
@@ -42,4 +45,15 @@ const ComposeMessage = ({onSendMessage}) => {
     )
 }
 
-export default ComposeMessage
+const mapStateToProps = state => ({
+    messages: state.messages,
+})
+
+const mapDispatchToProps = dispatch => bindActionCreators({
+    sendMessage
+}, dispatch)
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(ComposeMessage)

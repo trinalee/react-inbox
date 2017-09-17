@@ -1,10 +1,21 @@
 import {combineReducers} from 'redux'
-import { MESSAGES_RECEIVED, TOGGLE_SELECTED, TOGGLE_STAR } from '../actions'
+import {
+    MESSAGES_RECEIVED,
+    TOGGLE_SELECTED,
+    TOGGLE_STAR,
+    TOGGLE_ALL,
+    MARK_AS_READ,
+    MARK_AS_UNREAD,
+    DELETE_SELECTED,
+    APPLY_LABEL,
+    REMOVE_LABEL,
+    COMPOSE_MODE_TOGGLE,
+    SEND_MESSAGE
+} from '../actions'
 
 function messages(state = {all: []}, action) {
     switch (action.type) {
         case MESSAGES_RECEIVED:
-            console.log("**** MESSAGES_RECEIVED ", action.messages)
             return {
                 ...state,
                 all: action.messages
@@ -30,11 +41,72 @@ function messages(state = {all: []}, action) {
                     ...state.all.slice(action.index + 1)
                 ]
             };
+        case TOGGLE_ALL:
+            if (state.all.every(message => message.selected === true)) {
+                return {
+                    ...state,
+                    all: [
+                        ...state.all.map((message) => {
+                            let msg = message;
+                            msg.selected = false;
+                            return msg
+                        })
+                    ]
+                };
+            } else {
+                return {
+                    ...state,
+                    all: [
+                        ...state.all.map((message) => {
+                            let msg = message;
+                            msg.selected = true;
+                            return msg
+                        })
+                    ]
+                };
+            }
+        case SEND_MESSAGE:
+            return {
+                ...state,
+                all: [
+                    ...state.all,
+                    action.newMessage
+                ]
+            };
+        case MARK_AS_READ:
+        case MARK_AS_UNREAD:
+        case DELETE_SELECTED:
+        case APPLY_LABEL:
+        case REMOVE_LABEL:
+            return {
+                ...state,
+                all: action.newMessages
+
+            };
         default:
             return state
     }
 }
 
+function composeMode(state = {}, action) {
+    switch (action.type) {
+        case COMPOSE_MODE_TOGGLE:
+            return {
+                ...state,
+                composeMode: action.composeMode
+            };
+        case SEND_MESSAGE:
+            return {
+                ...state,
+                composeMode: false
+            };
+        default:
+            return state
+    }
+}
+
+
 export default combineReducers({
-    messages
+    messages,
+    composeMode
 })

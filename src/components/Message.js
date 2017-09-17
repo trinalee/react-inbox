@@ -1,11 +1,10 @@
 import React from 'react'
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
-import { toggleSelected, toggleStar } from '../actions'
+import {connect} from 'react-redux'
+import {bindActionCreators} from 'redux'
+import {toggleSelected, toggleStar} from '../actions'
 
-const Message = ({index, message, toggleSelected,  toggleStar}) => {
+const Message = ({index, message, toggleSelected, toggleStar}) => {
     let {subject, read, starred, labels, selected} = message;
-
     return (
         <div className={`row message ${read ? 'read' : 'unread'} ${selected ? 'selected' : ''}`}>
             <div className="col-xs-1">
@@ -18,7 +17,6 @@ const Message = ({index, message, toggleSelected,  toggleStar}) => {
                     <div className="col-xs-2">
                         <i className={`star fa ${starred ? 'fa-star' : 'fa-star-o'}`}
                            onClick={() => {
-                               console.log("*** STAR:", index, message)
                                toggleStar(index, message)
                            }}/>
                     </div>
