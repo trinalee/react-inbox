@@ -1,25 +1,17 @@
 import React from "react";
 import "./App.css";
+import Toolbars from "./components/Toolbars";
 import Messages from "./components/Messages";
-import { connect } from 'react-redux'
+import ComposeMessage from "./components/ComposeMessage";
+import {Route} from "react-router-dom";
 
-const App = ({ messages }) => (
-    (messages.length) ?
-        (
-            <div className="App">
-                <Messages messages={ messages }/>
-            </div>
-        ) :
-        (<div>Loading...</div>)
-)
+const App = () => (
+        <div className="App">
+            <Route path="/"  component={Toolbars}/>
+            <Route path="/compose" exact component={ComposeMessage}/>
+            <Route path="/"  component={Messages}/>
+        </div>
+);
 
-const mapStateToProps = state => ({
-    messages: state.messages.all
-})
+export default App;
 
-const mapDispatchToProps = () => ({})
-
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(App)

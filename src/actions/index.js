@@ -14,17 +14,17 @@ export const TOGGLE_STAR = 'TOGGLE_STAR';
 export function toggleStar(index, message) {
     return async (dispatch) => {
         await fetch(`${process.env.REACT_APP_API_URL}/api/messages`, {
-                method: 'PATCH',
-                body: JSON.stringify({
-                    messageIds: [index + 1],
-                    command: 'star',
-                    star: !message.starred
-                }),
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                }
-            })
+            method: 'PATCH',
+            body: JSON.stringify({
+                messageIds: [index + 1],
+                command: 'star',
+                star: !message.starred
+            }),
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+            }
+        });
         const messageStarred = message;
         messageStarred.starred = !message.starred;
 
@@ -200,11 +200,9 @@ export function removeLabel(labelName, messages) {
 
 export const COMPOSE_MODE_TOGGLE = 'COMPOSE_MODE_TOGGLE';
 export function composeModeToggle(prevComposeMode) {
-    return async (dispatch) => {
-        dispatch({
-            type: COMPOSE_MODE_TOGGLE,
-            composeMode: !prevComposeMode
-        });
+    return {
+        type: COMPOSE_MODE_TOGGLE,
+        composeMode: !prevComposeMode
     }
 }
 
@@ -234,19 +232,49 @@ export function sendMessage(msgSubject, msgBody) {
 
 export const TOGGLE_SELECTED = 'TOGGLE_SELECTED';
 export function toggleSelected(index) {
-    return async (dispatch) => {
-        dispatch({
-            type: TOGGLE_SELECTED,
-            index,
-        })
+    return {
+        type: TOGGLE_SELECTED,
+        index
     }
 }
 
 export const TOGGLE_ALL = 'TOGGLE_ALL';
 export function toggleAll() {
+    return {
+        type: TOGGLE_ALL
+    }
+}
+
+export const READ_MESSAGE = 'READ_MESSAGE';
+export function readMessage(index) {
     return async (dispatch) => {
+        await fetch(`${process.env.REACT_APP_API_URL}/api/messages`, {
+            method: 'PATCH',
+            body: JSON.stringify({
+                messageIds: [index + 1],
+                command: 'read',
+                read: true
+            }),
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+            }
+        });
+
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/messages/${index + 1}`);
+        const json = await response.json();
+
         dispatch({
-            type: TOGGLE_ALL
+            type: READ_MESSAGE,
+            index,
+            messageRead: json
         })
+    }
+}
+
+export const CLEAR_READ_MESSAGE = 'CLEAR_READ_MESSAGE';
+export function clearReadMessage() {
+    return {
+        type: CLEAR_READ_MESSAGE,
     }
 }

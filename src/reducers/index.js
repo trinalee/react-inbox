@@ -10,7 +10,9 @@ import {
     APPLY_LABEL,
     REMOVE_LABEL,
     COMPOSE_MODE_TOGGLE,
-    SEND_MESSAGE
+    SEND_MESSAGE,
+    READ_MESSAGE,
+    CLEAR_READ_MESSAGE
 } from '../actions'
 
 function messages(state = {all: []}, action) {
@@ -81,8 +83,16 @@ function messages(state = {all: []}, action) {
             return {
                 ...state,
                 all: action.newMessages
-
             };
+        case READ_MESSAGE:
+            return {
+                ...state,
+                all: [
+                    ...state.all.slice(0, action.index),
+                    action.messageRead,
+                    ...state.all.slice(action.index + 1)
+                ]
+            }
         default:
             return state
     }
@@ -105,8 +115,27 @@ function composeMode(state = {}, action) {
     }
 }
 
+function messageRead(state = {}, action) {
+    switch (action.type) {
+        case CLEAR_READ_MESSAGE:
+            return {
+                ...state,
+                messageRead: {}
+            };
+        case READ_MESSAGE:
+            return {
+                ...state,
+                messageRead: action.messageRead
+            };
+        default:
+            return state
+    }
+}
+
+
 
 export default combineReducers({
     messages,
-    composeMode
+    composeMode,
+    messageRead
 })
